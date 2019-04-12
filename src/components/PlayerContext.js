@@ -9,6 +9,8 @@ const PlayerProvider = (props) => {
     musicList,
     currentAudioIndex: null,
     isPlaying: false,
+    songPosition: 0,
+    songDuration: 0
   });
   return (
     <PlayerContext.Provider value={[state, setState]}>
