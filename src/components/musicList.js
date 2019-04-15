@@ -1,7 +1,7 @@
 export const musicList = [
   {
     title: 'Demons',
-    artist: 'Imagin Dragons',
+    artist: 'Imagine Dragons',
     file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1554868519/demons.mp3',
     cover: 'https://res.cloudinary.com/dimltfc82/image/upload/v1554868612/imagine.jpg'
   },
@@ -14,7 +14,7 @@ export const musicList = [
   {
     title: 'Bohemian Rhapsody',
     artist: 'Queen',
-    file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1554868584/bohemian.mp3',
+    file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1555113147/bohemian.mp3',
     cover: 'https://res.cloudinary.com/dimltfc82/image/upload/v1554868617/queen.jpg'
   },
   {
@@ -26,7 +26,19 @@ export const musicList = [
   {
     title: 'Stacy\'s Mom',
     artist: 'Fountains Of Wayne',
-    file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1554868605/stacy-mom.mp3',
+    file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1555113155/stacy.mp3',
     cover: 'https://res.cloudinary.com/dimltfc82/image/upload/v1554868626/fountain.jpg'
-  }
+  },
+  {
+    title: 'Teenage Dirtbag',
+    artist: 'Wheatus',
+    file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1555113161/teenage.mp3',
+    cover: 'https://res.cloudinary.com/dimltfc82/image/upload/v1555034645/whea.jpg'
+  },
+  {
+    title: 'Boulevard of Broken Dreams',
+    artist: 'Green Day',
+    file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1555037089/boulevard.mp3',
+    cover: 'https://res.cloudinary.com/dimltfc82/image/upload/v1555034654/green.jpg'
+  },
 ]
