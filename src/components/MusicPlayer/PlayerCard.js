@@ -1,27 +1,23 @@
 import React, { useEffect } from 'react';
-import { useContext } from 'react';
-import { PlayerContext } from "../PlayerContext";
 import runPlayer from "../hooks/runPlayer";
 
 const PlayerCard = (props) => {
 
-  const [state, setState] = useContext(PlayerContext);
-
-  const { isPlaying, currentSongName, togglePlay, playPreviousTrack, playNextTrack, songPosition, songDuration, playTrack, audio } = runPlayer();
+  const { isPlaying, currentAudioName, togglePlay, playPreviousTrack, playNextTrack, song, skipSong, songPosition, songDuration } = runPlayer();
 
   return (
     <div>
         <div>
-          <marquee>{currentSongName}</marquee>
+          {song ? <div>{song.title}</div> : '?'}
         </div>
         <div>
-          <button onClick={playPreviousTrack} disabled={!currentSongName}>
+          <button onClick={() => skipSong(-1)} >
               Previous
           </button>
           <button onClick={togglePlay}>
             {isPlaying ? 'Pause' : 'Play' }
           </button>
-          <button onClick={playNextTrack} disabled={!currentSongName}>
+          <button onClick={() => skipSong(1)}>
             Next
           </button>
         </div>

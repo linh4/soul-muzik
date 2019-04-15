@@ -4,25 +4,60 @@ import { PlayerContext } from "../PlayerContext";
 const runPlayer = () => {
   const [state, setState] = useContext(PlayerContext);
 
-  const playTrack = (index) => {
-    if (index === state.currentSongIndex) {
-      if (state.isPlaying) {
-        state.audio.pause()
-        state.audio.currentTime = 0
-        // state.audio.play()
-      }
-      else {
-        state.audio = new Audio(state.musicList[index].file);
-      }
-    }
-    else {
-      state.audio.pause();
-      state.audio = new Audio(state.musicList[index].file);
-      state.audio.play();
-      setState(state => ({ ...state, currentSongIndex: index, isPlaying: true }));
-    }
+  const playTrack = (song) => {
+    // console.log("song?" ,song)
+    // If a song is currently playing, we have to remove it
+    // if(state.audio !== null) {
+      // state.audio.removeEventListener('timeupdate', () => {
+        // setState({songPosition: 0});
+      // });
+      // state.audio.pause();
+      // state.audio.removeAttribute('src');
+      // state.audio.load();
+    // }
+
+    // if (song === state.song) {
+    //   togglePlay()
+    // }
+    state.audio.pause();
+    state.audio = new Audio(song.file);
+    state.audio.play();
+    //
+    // // Show the status bar at the bottom
+    setState(state => ({ ...state, song, isPlaying: true }));
+    console.log(state.song)
     showTime()
+    // console.log(state.song)
+    //
+    // Update the song position as the song plays
+    // state.audio.addEventListener('timeupdate', e => {
+    //   setState({ ...state, songPosition: formatTime(state.audio.currentTime)});
+    // });
+
+    // If autoplay is set, move to the next song in the queue after the current one has finished
+    // state.audio.addEventListener('ended', () => {
+      // if(state.autoplay) {
+        // state.skipSong(1);
+      // } else {
+        // setState({playing: false, statusVisible: false});
+      // }
+    // });
   }
+
+  const skipSong = index => {
+  // Reset times
+  // console.log(state.song)
+  let indexTo = state.song.id + index;
+  if(state.musicList.length > indexTo && indexTo > 0) {
+    playTrack(state.musicList[indexTo]);
+  } else if(indexTo < 0) {
+    // Play the last song in the queue
+    playTrack(state.musicList[state.musicList.length - 1]);
+
+  } else {
+    playTrack(state.musicList[0]);
+  }
+}
 
   const showTime = () => {
     // Update the song position as the song plays
@@ -38,7 +73,9 @@ const runPlayer = () => {
 
     // Move to the next song in the queue after the current one has finished
     state.audio.addEventListener('ended', () => {
-      playNextTrack();
+      // playNextTrack();
+      // console.log("song", state.song)
+      skipSong(1)
     });
   }
 
@@ -68,7 +105,6 @@ const runPlayer = () => {
   }
 
   return {
-    currentSongName: state.currentSongIndex !== null && state.musicList[state.currentSongIndex].title,
     musicList: state.musicList,
     isPlaying: state.isPlaying,
     songPosition: state.songPosition,
@@ -77,6 +113,8 @@ const runPlayer = () => {
     togglePlay,
     playPreviousTrack,
     playNextTrack,
+    song: state.song,
+    skipSong
   }
 };
 
