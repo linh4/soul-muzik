@@ -3,7 +3,7 @@ import runPlayer from "../hooks/runPlayer";
 
 const PlayerCard = (props) => {
 
-  const { isPlaying, currentAudioName, togglePlay, playPreviousTrack, playNextTrack, song, skipSong, songPosition, songDuration } = runPlayer();
+  const { isPlaying, currentAudioName, togglePlay, song, skipSong, songPosition, songDuration, playTrack } = runPlayer();
 
   return (
     <div>
@@ -11,13 +11,13 @@ const PlayerCard = (props) => {
           {song ? <div>{song.title}</div> : '?'}
         </div>
         <div>
-          <button onClick={() => skipSong(-1)} >
+          <button onClick={() => skipSong(song, -1)} >
               Previous
           </button>
           <button onClick={togglePlay}>
             {isPlaying ? 'Pause' : 'Play' }
           </button>
-          <button onClick={() => skipSong(1)}>
+          <button onClick={() => skipSong(song, 1)}>
             Next
           </button>
         </div>

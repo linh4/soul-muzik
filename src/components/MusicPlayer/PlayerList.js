@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import runPlayer from "../hooks/runPlayer";
 
 const PlayerList = () => {
 
   const { musicList, currentAudioName, playTrack, isPlaying, songPosition } = runPlayer();
+
+  useEffect(() => {
+    playTrack(musicList[0])
+  },[])
 
   return (
     <div>

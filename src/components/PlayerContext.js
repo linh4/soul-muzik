@@ -5,7 +5,7 @@ const PlayerContext = React.createContext([{}, () => {}]);
 
 const PlayerProvider = (props) => {
   const [state, setState] = useState({
-    audio: new Audio(),
+    audio: null,
     musicList,
     currentSongIndex: 0,
     song: null,

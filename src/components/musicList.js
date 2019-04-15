@@ -2,7 +2,8 @@ export const musicList = [
   {
     title: 'Demons',
     artist: 'Imagine Dragons',
-    file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1554868519/demons.mp3',
+    // file: 'https://res.cloudinary.com/dimltfc82/video/upload/v1554868519/demons.mp3',
+    file: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/355309/Swing_Jazz_Drum.mp3',
     cover: 'https://res.cloudinary.com/dimltfc82/image/upload/v1554868612/imagine.jpg',
     id: 0
   },
