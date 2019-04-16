@@ -1,18 +1,17 @@
 import React from 'react';
 
-const PlayerCard = ({song, duration, currentTime}) => {
-  console.log(currentTime)
+const PlayerCard = ({song, duration, currentTime, isPlaying, togglePlay, skipSong}) => {
   return (
     <div>
       {song ? <div>{song.title}</div> : '?'}
         <div>
-          <button>
+          <button onClick={() => skipSong(-1)}>
               Previous
           </button>
-          <button>
-
+          <button onClick={togglePlay}>
+            {isPlaying ? 'Pause' : 'Play'}
           </button>
-          <button>
+          <button onClick={() => skipSong(1)}>
             Next
           </button>
         </div>
