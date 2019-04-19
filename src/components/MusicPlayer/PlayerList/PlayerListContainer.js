@@ -5,17 +5,22 @@ import PlayerCard from '../PlayerCard/PlayerCard.js'
 import { formatTime } from '../../utils/constants.js'
 
 class PlayerListContainer extends Component {
-    state = {
-      musicList,
-      currentSongIndex: 0,
-      audio: new Audio(),
-      song: null,
-      songLoaded: false,
-      isPlaying: false,
-      totalDuration: 0,
-      currentTime: 0,
-      volume: 0.5,
-    }
+  state = {
+    musicList,
+    currentSongIndex: 0,
+    audio: new Audio(),
+    song: null,
+    songLoaded: false,
+    isPlaying: false,
+    totalDuration: 0,
+    currentTime: 0,
+    doneStyle: '100%',
+    handleStyle: '0%',
+    progressSpanTime: 0,
+    handleActive: false,
+  }
+  pointerFirst = 0;
+  spannedTime = 0;
 
   componentDidMount() {
     this.loadSongToState();
@@ -36,11 +41,10 @@ class PlayerListContainer extends Component {
     const audio = this.state.audio;
     audio.src = audio.src !== song.file ? song.file : audio.src;
     audio.currentTime = 0;
-    audio.volume = this.state.volume;
     audio.loop = this.state.loop;
     audio.preload = true;
     audio.autoplay = true;
-    this.setState({ song, audio, songLoaded: false, isPlaying: false, volume: audio.volume }, this.playPauseAudio)
+    this.setState({ song, audio, songLoaded: false, isPlaying: false })
   }
 
   addEventsToAudio = () => {
@@ -50,11 +54,7 @@ class PlayerListContainer extends Component {
       }
     });
     this.state.audio.addEventListener('ended', () => {
-        // if (this.state.loop) {
-            // this.setState({isPlaying: true}, this.playPauseAudio);
-        // } else {
         this.skipSong(1)
-        // }
     });
     this.state.audio.addEventListener('timeupdate', () => {
       if (this.state.songLoaded) {
@@ -67,7 +67,10 @@ class PlayerListContainer extends Component {
     const audio = this.state.audio;
     const totalDuration = formatTime(audio.duration)
     const currentTime = formatTime(audio.currentTime)
-    this.setState({totalDuration, currentTime});
+    this.setState({totalDuration, currentTime},
+            () => {
+                this.updateProgressBar()
+            });
   }
 
   playPauseAudio = () => {
@@ -91,6 +94,86 @@ class PlayerListContainer extends Component {
     this.setState({currentSongIndex}, this.loadSongToState);
   }
 
+  updateProgressBar = () => {
+    const handleParent = document.getElementById("handleCtr").parentElement;
+    const handleCtr = document.getElementById("handleCtr");
+
+    if (handleParent && handleCtr) {
+      const handleParentWidth = parseFloat(window.getComputedStyle(handleParent, null).width);
+      const timeRunning = (this.state.audio.currentTime / this.state.audio.duration) * handleParentWidth;
+
+      this.setState({
+        handleStyle: !this.state.handleActive ? timeRunning + "px" : this.state.handleStyle,
+        doneStyle: `${handleParentWidth - timeRunning}px`
+      });
+    }
+  }
+
+  progressHandler = (event) => {
+    if (event.type === 'mousedown') {
+      this.pointerFirst = event.pageX;
+      document.addEventListener('mousemove', this.progressMove);
+      document.addEventListener('mouseup', this.progressDrop);
+    } else if (event.type === 'touchstart') {
+        this.pointerFirst = event.touches[0].pageX;
+        event.target.addEventListener('touchmove', this.progressMove);
+        event.target.addEventListener('touchend', this.progressDrop);
+    }
+
+    const handleCtr = document.getElementById('handleCtr');
+    const progressBarWidth = parseFloat(window.getComputedStyle(handleCtr.parentElement, null).width);
+    let handleCtrStyle = parseFloat(this.pointerFirst - ((window.innerWidth - progressBarWidth) / 2)) + 'px'
+    let doneStyleRight = (progressBarWidth - parseFloat(handleCtrStyle)) + 'px';
+    this.spannedTime = parseFloat(this.state.audio.duration / progressBarWidth) * parseFloat(handleCtrStyle);
+
+    this.setState({
+      handleActive: true,
+      handleStyle: handleCtrStyle,
+      doneStyle: doneStyleRight,
+      progressSpanTime: formatTime(this.spannedTime)
+    });
+  }
+
+  progressMove = (event) => {
+    let pointerSecond = 0;
+    if (event.type === 'mousemove') {
+        pointerSecond = event.pageX;
+        document.addEventListener('mouseup', this.progressDrop);
+    } else if (event.type === 'touchmove') {
+        pointerSecond = event.touches[0].pageX;
+        event.target.addEventListener('touchend', this.progressDrop);
+    }
+
+    const handleCtr = document.getElementById('handleCtr');
+    const progressBarWidth = parseFloat(window.getComputedStyle(handleCtr.parentElement, null).width);
+    let pointerPosition = pointerSecond - this.pointerFirst;
+    this.pointerFirst = pointerSecond;
+    let handleCtrStyle = parseFloat(this.state.handleStyle) + pointerPosition + 'px';
+    let doneStyleRight = (progressBarWidth - (parseFloat(this.state.handleStyle) + pointerPosition)) + 'px';
+    this.spannedTime = parseFloat(this.state.audio.duration / progressBarWidth) * parseFloat(handleCtrStyle);
+
+    this.setState({
+      handleStyle: handleCtrStyle,
+      doneStyle: doneStyleRight,
+      progressSpanTime: formatTime(this.spannedTime)
+    });
+  }
+
+  progressDrop = (event) => {
+    const audio = this.state.audio;
+    audio.currentTime = this.spannedTime;
+    this.setState({
+      handleActive: false,
+      currentTime: formatTime(this.spannedTime),
+      progressSpanTime: formatTime(this.spannedTime)
+    }, () => {
+      event.target.removeEventListener('touchmove', this.progressMove);
+      event.target.removeEventListener('touchend', this.progressDrop);
+      document.removeEventListener('mousemove', this.progressMove);
+      document.removeEventListener('mouseup', this.progressDrop);
+    });
+  }
+
 
   render() {
     return (
@@ -101,14 +184,20 @@ class PlayerListContainer extends Component {
           selectThisSong={this.selectThisSong}
           />
         )}
-        <PlayerCard
-          song={this.state.song}
-          duration={this.state.totalDuration}
-          currentTime={this.state.currentTime}
-          isPlaying={this.state.isPlaying}
-          togglePlay={this.togglePlay}
-          skipSong={this.skipSong}
-        />
+        <div className="Player">
+          <PlayerCard
+            song={this.state.song}
+            duration={this.state.totalDuration}
+            currentTime={this.state.currentTime}
+            isPlaying={this.state.isPlaying}
+            togglePlay={this.togglePlay}
+            skipSong={this.skipSong}
+            progressHandler={this.progressHandler}
+            doneStyle={this.state.doneStyle}
+            handleStyle={this.state.handleStyle}
+            handleActive={this.state.handleActive}
+          />
+        </div>
       </div>
     )
   }

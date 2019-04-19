@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   background: pink;
   text-align: center;
@@ -18,4 +24,74 @@ button:hover {
 
 button:focus {
   outline: none;
+}
+
+.Player {
+  padding: 24px 28px;
+  max-height: 100vh;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-flow: column;
+}
+
+.Player .progress-container {
+  position: relative;
+  margin-bottom: 32px;
+  padding-bottom: 44px;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Player .progress-container .time {
+  min-width: 40px;
+}
+
+.Player .progress-container .progress-bar {
+  width: calc(100% - 100px);
+  height: 6px;
+  border-radius: 100000px;
+  background: orange;
+  position: relative;
+  cursor: pointer;
+}
+
+
+.Player .progress-container .progress-bar .done {
+  background: #333;
+  border-radius: 100000px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 100%;
+  z-index: 11;
+}
+
+.Player .handle-ctr {
+  position: absolute;
+  width: 0px;
+  transform: translateY(-35%);
+  left: 0px;
+  z-index: 12;
+}
+
+
+.Player .progress-container .handle-ctr .handle {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  padding: 4px;
+  box-sizing: content-box;
+  background: aliceblue;
+  outline: none;
+  border: none;
+  border: 3px solid #333;
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
